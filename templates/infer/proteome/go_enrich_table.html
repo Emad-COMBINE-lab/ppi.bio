@@ -1,0 +1,108 @@
+{% extends "masters/main.html" %}
+{% load static %}
+{% load django_bootstrap5 %}
+
+{% block title %}PPI.bio - Task{% endblock %}
+
+{% block head %}
+    <meta property="data-task-id" content="{{ result_id }}" />
+{% endblock %}
+
+{% block body %}
+    <h1>Proteome Prediction Report</h1>
+    <h3 class="text-secondary">Task ID: <img id="task_success_icon" src="{% static '/imgs/success.svg' %}" style="vertical-align:1px;" alt="Success icon"/> <abbr title="{{ result_id }}">{{ short_id }}</abbr></h3>
+    <h5 class="text-secondary">Architecture: {{ architecture }} V{{ architecture_version }}</h5>
+    <h5 class="text-secondary">Organism: <em>{{ organism_sci_name }}</em> ({{ organism_common_name }})</h5>
+
+    <details>
+      <summary class="text-secondary">Sequence</summary>
+      <pre style="white-space: pre-wrap; white-space: -moz-pre-wrap; word-wrap: break-word;">{{ sequence }}</pre>
+    </details>
+
+    <ul class="nav nav-tabs mt-5 mb-5">
+      <li class="nav-item">
+        <a class="nav-link" aria-current="page" href="{% url 'proteome_report' result_id=result_id %}"><i class="fa-solid fa-table"></i> Prob. Table</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'proteome_report_prob_hist' result_id=result_id %}"><i class="fa-solid fa-chart-simple"></i> Prob. Histogram</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link active" href="{% url 'proteome_report_go_enrich' result_id=result_id %}"><i class="fa-solid fa-table"></i> GO Enrichment</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'proteome_report_go_freq' result_id=result_id %}"><i class="fa-solid fa-chart-simple"></i> GO Frequency</a>
+      </li>
+    </ul>
+
+    <h4 class="mt-5">GO Enrichment</h4>
+
+    <table id="protein-probabilities" class="table table-striped">
+        <thead>
+            <tr>
+                <th data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="Gene Ontology Identifier">GO ID</th>
+                <th data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="Gene Ontology Label">GO Label</th>
+                <th>Fold Enrichment</th>
+                <th data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="False-Discovery Rate">FDR</th>
+                <th>Expected</th>
+                <th><em>p</em>-value</th>
+                <th data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title='"+" for positive enrichment, "-" for negative enrichment.'>&pm;</th>
+            </tr>
+        </thead>
+        <tbody id="protein-probabilities-body">
+        </tbody>
+    </table>
+
+    <script src="/static/js/vendor/jquery-3.6.0.min.js"></script>
+    <script src="/static/js/vendor/bootstrap.bundle.min.js"></script>
+    <link href="/static/css/vendor/datatables.min.css" rel="stylesheet"/>
+    <script src="/static/js/vendor/datatables-2.1.1.min.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+            const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+
+            function formatNumber(data, type) {
+                            if (data < 0.0001) {
+                                return new Intl.NumberFormat("en-CA", {
+                                    minimumSignificantDigits: 3,
+                                    maximumSignificantDigits: 3,
+                                    notation: "scientific"
+                                }).format(data);
+                            }else{
+                                return new Intl.NumberFormat("en-CA", {
+                                    minimumSignificantDigits: 3,
+                                    maximumSignificantDigits: 3
+                                }).format(data);
+                            }
+                        }
+
+            $('#protein-probabilities').DataTable({
+                data: {{ datatable|safe }},
+                columns: [
+                    {
+                        data: 'go_id',
+                        render: function (data, type) {
+                            return "<a href='https://www.ebi.ac.uk/QuickGO/term/" + data + "' target='_new'>" + data + "</a>"
+                        }
+                    },
+                    {
+                        data: 'go_label'
+                    },
+                    { data: 'fold_enrichment',
+                        render: formatNumber },
+                    { data: 'fdr',
+                        render: formatNumber },
+                    { data: 'expected',
+                        render:formatNumber },
+                    { data: 'p_value',
+                        render: formatNumber},
+                    { data: 'plus_minus' }
+                ],
+                searching: false,
+                ordering:  false
+            });
+        });
+
+    </script>
+{% endblock %}

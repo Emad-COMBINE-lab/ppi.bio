@@ -1,0 +1,64 @@
+{% extends "masters/main.html" %}
+{% load django_bootstrap5 %}
+{% load static %}
+
+{% block title %}PPI.bio - Proteome-wide Prediction Submission Page{% endblock %}
+
+{% block body %}
+
+    <h1>Proteome-wide Prediction</h1>
+
+    <p>Predict the pairwise interaction probability of a supplied protein against the entire proteome of a specified organism.</p>
+
+    <p>Enter an amino acid sequence below. When you click on "submit", it'll be queued for processing. Once processed, you'll be presented with a data table with all the pairwise interaction probabilities of your submitted amino acid sequence and proteins from the organism specified.</p>
+
+    <p>All models here are trained on a dataset of <em>Homo sapiens</em> protein-protein interactions from <a href="https://string-db.org/" target="_blank">STRING-DB</a>. The INTREPPPID model is particularly well-suited to the case of "cross-species" inference, whereby inferences are made on species other than that which it was trained on.</p>
+    <form action="/infer/proteome/submit" method="post" class="form">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        <div id="status" style="padding-top: 10px; padding-bottom: 10px;">
+        </div>
+        {% bootstrap_button id="infer_btn" button_type="submit" content="Predict Interactions" %}
+    </form>
+    <script>
+    const form_architecture = document.getElementById('id_architecture');
+    const form_organism = document.getElementById('id_organism');
+    const status = document.getElementById('status');
+    const infer_btn = document.getElementById('infer_btn');
+
+    function update_precomputed_numbers(){
+
+        status.innerHTML = "<img src=\"{% static 'imgs/loading.svg' %}\" alt=\"Loading Indicator\" style=\"width:24px;\" /> Please wait..."
+        infer_btn.setAttribute("disabled", true)
+
+
+        fetch('/infer/validate_org_arch/'+form_organism.value+'/'+form_architecture.value)
+              .then(async response => {
+                let payload = await response.json();
+                let human_count = new Intl.NumberFormat("en-CA").format(payload.count);
+
+                if (payload.count > 0) {
+                    status.innerHTML = '<div class="alert alert-success" role="alert"><i class="fa-solid fa-circle-check"></i> Will infer interactions with '+ human_count + ' proteins using weights "' + payload.weights + '#' + payload.weights_id + '". </div>'
+                    infer_btn.removeAttribute("disabled")
+                }else{
+                    status.innerHTML = '<div class="alert alert-danger" role="alert"><i class="fa-solid fa-circle-xmark"></i> No interactions will be inferred for this combination of organism and architecture. Try another model architecture.</span></div>'
+                }
+
+              });
+    }
+
+
+    form_architecture.addEventListener('change', function() {
+        update_precomputed_numbers()
+    });
+
+    form_organism.addEventListener('change', function() {
+        update_precomputed_numbers()
+    });
+
+    document.addEventListener("DOMContentLoaded", function(event) {
+        update_precomputed_numbers();
+    });
+    </script>
+
+{% endblock %}

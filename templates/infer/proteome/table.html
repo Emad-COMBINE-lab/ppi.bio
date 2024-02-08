@@ -1,0 +1,125 @@
+{% extends "masters/main.html" %}
+{% load static %}
+{% block title %}PPI.bio - Task{% endblock %}
+
+{% block head %}
+    <meta property="data-task-id" content="{{ result_id }}" />
+{% endblock %}
+
+{% block body %}
+    <h1>Proteome Prediction Report</h1>
+    <h3 class="text-secondary">Task ID: <img id="task_success_icon" src="{% static '/imgs/success.svg' %}" style="vertical-align:1px;" alt="Success icon"/> <abbr title="{{ result_id }}">{{ short_id }}</abbr></h3>
+    <h5 class="text-secondary">Architecture: {{ architecture }} V{{ architecture_version }}</h5>
+    <h5 class="text-secondary">Organism: <em>{{ organism_sci_name }}</em> ({{ organism_common_name }})</h5>
+
+    <details>
+      <summary class="text-secondary">Sequence</summary>
+      <pre style="white-space: pre-wrap; white-space: -moz-pre-wrap; word-wrap: break-word;">{{ sequence }}</pre>
+    </details>
+
+
+    <ul class="nav nav-tabs mt-5 mb-5">
+      <li class="nav-item">
+        <a class="nav-link active" aria-current="page" href="{% url 'proteome_report' result_id=result_id %}"><i class="fa-solid fa-table"></i> Prob. Table</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'proteome_report_prob_hist' result_id=result_id %}"><i class="fa-solid fa-chart-simple"></i> Prob. Histogram</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'proteome_report_go_enrich' result_id=result_id %}"><i class="fa-solid fa-table"></i> GO Enrichment</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'proteome_report_go_freq' result_id=result_id %}"><i class="fa-solid fa-chart-simple"></i> GO Frequency</a>
+      </li>
+
+    </ul>
+
+    <h4 class="mt-5">Probability Table</h4>
+    <p>A datatable of all the inferred interactions between your submitted protein and the proteins on each row of the datatable.</p>
+
+
+    <a class="btn btn-primary mb-5" href="/infer/proteome/report/{{ result_id }}/csv" role="button"><i class="fa-solid fa-table"></i> Download CSV</a>
+    <table id="protein-probabilities" class="table table-striped">
+        <thead>
+            <tr>
+                <th>UniProt AC</th>
+                <th>Gene Name</th>
+                <th>Protein Name</th>
+                <th>Interaction<br/>Probability</th>
+            </tr>
+        </thead>
+        <tbody id="protein-probabilities-body">
+        </tbody>
+        <tfoot id="protein-probabilities-loading" class="hidden">
+            <tr>
+              <td colspan="4" style="text-align: center; font-weight: bold;"><img src="{% static 'imgs/loading.svg' %}" alt="Loading Indicator" style="width:40px;"/> Loading...</td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <script src="/static/js/vendor/jquery-3.6.0.min.js"></script>
+    <link href="/static/css/vendor/datatables.min.css" rel="stylesheet"/>
+    <script src="/static/js/vendor/datatables-2.1.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            $('#protein-probabilities').DataTable({
+                ajax: {
+                    url: "/infer/proteome/results/{{ result_id }}.json",
+                    type: 'GET',
+                    beforeSend: function () {
+                        document.getElementById("protein-probabilities-loading").style.removeProperty('display');
+                        document.getElementById("protein-probabilities-body").style.display = 'none';
+                    },
+                    complete: function () {
+                        document.getElementById("protein-probabilities-loading").style.display = 'none';
+                        document.getElementById("protein-probabilities-body").style.removeProperty('display');
+                    },
+                },
+                serverSide: true,
+                language: {
+                    loadingRecords: '&nbsp;',
+                    processing: 'Loading...'
+                },
+                columns: [
+                    {
+                        data: 'uniprot_ac',
+                        "searchable": true,
+                        render: function (data, type) {
+                            return "<a href='https://www.uniprot.org/uniprotkb/" + data + "/entry' target='_new'>" + data + "</a>"
+                        }
+                    },
+                    {data: 'gene_name', "searchable": true},
+                    {data: 'protein_name'},
+                    {
+                        data: 'probability',
+                        render: function (data, type) {
+
+                            const prob = Math.round(data * 100);
+
+                            if (prob >= 90){
+                                var prog_colour = "bg-success text-light";
+                            }else if (prob >= 70){
+                                var prog_colour = "bg-warning text-dark";
+                            }else{
+                                var prog_colour = "bg-danger text-light";
+                            }
+
+                            if (prob <= 10){
+                                return prob + "% <div class='progress'><div class='progress-bar "+prog_colour+"' role='progressbar' style='width: "+prob+"%; font-weight:bold;' aria-valuenow='+prob+' aria-valuemin='0' aria-valuemax='100'></div><div class='progress'>"
+                            }else{
+                                return "<div class='progress'><div class='progress-bar "+prog_colour+"' role='progressbar' style='width: "+prob+"%; font-weight:bold;' aria-valuenow='+prob+' aria-valuemin='0' aria-valuemax='100'>"+prob+"%</div><div class='progress'>"
+                            }
+                        }
+                    },
+                ]
+            });
+        });
+
+
+    </script>
+
+{% endblock %}

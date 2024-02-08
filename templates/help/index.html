@@ -1,0 +1,13 @@
+{% extends "masters/main.html" %}
+{% block title %}PPI.bio - Help Index{% endblock %}
+
+{% block body %}
+<h2>Help Pages</h2>
+<p>You can find here a number of pages which document the usage of this website.</p>
+<ul>
+{% for meta in metas %}
+    <li><a href="/help/{{ meta.file_path }}">{{ meta.title.0 }}</a></li>
+{% endfor %}
+</ul>
+
+{% endblock %}

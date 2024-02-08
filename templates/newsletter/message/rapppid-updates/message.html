@@ -1,0 +1,45 @@
+{% load i18n %}<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8">
+	<title>{{ newsletter.title }}: {{ message.title }}</title>
+</head>
+<body>
+
+<p><sup>Trouble reading this email? {% if submission.publish %}<a href="http://{{ site.domain }}{{ submission.get_absolute_url }}">{% trans "Read message online" %}</a>{% endif %}</sup></p>
+<hr/>
+    <h1>{{ message.title }}</h1>
+    {% for article in message.articles.all %}
+        <h2>{{ article.title }}</h2>
+
+        {% include thumbnail_template %}
+
+        <div>{{ article.text|safe }}</div>
+
+        {% if article.url %}
+            <div><a href="{{ article.url }}">{% trans "Read more" %}</a></div>
+        {% endif %}
+    {% endfor %}
+
+    {% if attachment_links %}
+        {% for att in message.attachments.all %}
+            {% if forloop.first %}
+                <strong>{% trans "Attachments" %}</strong>
+                <table>
+            {% endif %}
+            <tr>
+                <td>
+                    &#128206; <a href="{{ att.file.url }}">{{ att.file_name }}</a> ({{ att.file.size|filesizeformat }})
+                </td>
+            </tr>
+            {% if forloop.last %}
+                </table>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+<br/>
+<hr/>
+<p><sup>From the {{ newsletter.title }} Newsletter.<br/><a href="http://{{ site.domain }}{% url "newsletter_unsubscribe_request" newsletter.slug %}">{% trans "Unsubscribe" %}</a></sup></p>
+</body>
+</html>

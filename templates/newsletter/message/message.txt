@@ -1,0 +1,16 @@
+{% load i18n %}++++++++++++++++++++
+
+{{ newsletter.title }}: {{ message.title }}
+
+++++++++++++++++++++
+
+{% for article in message.articles.all %}
+{{ article.title }}
+{{ article.text|striptags|safe }}
+
+{% endfor %}
+
+++++++++++++++++++++
+
+{% trans "Unsubscribe:" %} http://{{ site }}{% url "newsletter_unsubscribe_request" newsletter.slug %}
+{% trans "Read message online" %}: {% if submission.publish %}http://{{ site.domain }}{{ submission.get_absolute_url }}{% endif %}

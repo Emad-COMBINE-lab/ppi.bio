@@ -1,0 +1,14 @@
+{% extends "masters/main.html" %}
+{% load static %}
+{% block title %}PPI.bio - Not Found{% endblock %}
+
+{% block body %}
+
+    <div id="error_indicator" class="progress-indicator">
+        <img src="{% static 'imgs/error.svg' %}" alt="Error Icon" width="140px" height="140px"/>
+        <h5 class="mt-4 font-weight-bold">Error</h5>
+        <p>A problem was encountered while trying to show you this page.</p>
+        <a class="btn btn-primary" href="/">Home</a> <a class="btn btn-secondary" href="#" onclick="history.back();">Go Back</a>
+    </div>
+
+{% endblock %}

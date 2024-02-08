@@ -1,0 +1,18 @@
+%0 Journal Article
+%A Szymborski, Joseph
+%A Emad, Amin
+%T RAPPPID: towards generalizable protein interaction prediction with AWD-LSTM twin networks
+%B Bioinformatics
+%D 2022
+%R 10.1093/bioinformatics/btac429
+%J Bioinformatics
+%V 38
+%N 16
+%P 3958-3967
+%@ 1367-4803
+%X Computational methods for the prediction of protein–protein interactions (PPIs), while important tools for researchers, are plagued by challenges in generalizing to unseen proteins. Datasets used for modelling protein–protein predictions are particularly predisposed to information leakage and sampling biases.In this study, we introduce RAPPPID, a method for the Regularized Automatic Prediction of Protein–Protein Interactions using Deep Learning. RAPPPID is a twin Averaged Weight-Dropped Long Short-Term memory network which employs multiple regularization methods during training time to learn generalized weights. Testing on stringent interaction datasets composed of proteins not seen during training, RAPPPID outperforms state-of-the-art methods. Further experiments show that RAPPPID’s performance holds regardless of the particular proteins in the testing set and its performance is higher for experimentally supported edges. This study serves to demonstrate that appropriate regularization is an important component of overcoming the challenges of creating models for PPI prediction that generalize to unseen proteins. Additionally, as part of this study, we provide datasets corresponding to several data splits of various strictness, in order to facilitate assessment of PPI reconstruction methods by others in the future.Code and datasets are freely available at https://github.com/jszym/rapppid and Zenodo.org.Supplementary data are available at Bioinformatics online.
+%[ 7/14/2023
+%U https://doi.org/10.1093/bioinformatics/btac429
+
+
+

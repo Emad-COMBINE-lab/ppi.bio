@@ -1,0 +1,52 @@
+{% extends "masters/main.html" %}
+{% load static %}
+{% block title %}PPI.bio - Task{% endblock %}
+
+{% block head %}
+    <meta property="data-task-id" content="{{ result_id }}" />
+{% endblock %}
+
+{% block body %}
+    <h1>Proteome Prediction Report</h1>
+    <h3 class="text-secondary">Task ID: <abbr title="{{ result_id }}">{{ short_id }}</abbr></h3>
+    <h5 class="text-secondary">Architecture: {{ architecture }} V{{ architecture_version }}</h5>
+    <h5 class="text-secondary">Organism: <em>{{ organism_sci_name }}</em> ({{ organism_common_name }})</h5>
+
+    <details>
+      <summary class="text-secondary">Sequence</summary>
+      <pre style="white-space: pre-wrap; white-space: -moz-pre-wrap; word-wrap: break-word;">{{ sequence }}</pre>
+    </details>
+
+
+    <div id="loading_indicator" class="progress-indicator">
+        <img src="{% static 'imgs/loading.svg' %}" alt="Loading Indicator" />
+        <div id="queue_indicator" style="display: none;">
+            <h5 class="mt-4 font-weight-bold">Waiting in Queue.</h5>
+            <p>PPI.bio is currently computing predictions for other users. As soon as those users are served, the
+                website will start computing your predictions. You may leave this page and come back later.</p>
+        </div>
+    </div>
+
+    <div id="not_found_indicator" class="progress-indicator" style="display: none;">
+        <img src="{% static 'imgs/not_found.svg' %}" alt="Question Mark Icon" width="140px" height="140px"/>
+        <h5 class="mt-4 font-weight-bold">Not Found</h5>
+        <p>There is no task with the ID you supplied.</p>
+    </div>
+
+    <div id="error_indicator" class="progress-indicator" style="display: none;">
+        <img src="{% static 'imgs/error.svg' %}" alt="Error Icon" width="140px" height="140px"/>
+        <h5 class="mt-4 font-weight-bold">Error</h5>
+        <p>A problem was encountered while computing interaction probabilities for this task.</p>
+    </div>
+
+    <div id="progress_bar_container" style="display: none; width: 600px; margin: 0 auto; text-align: center;">
+        <h5 class="mt-4 font-weight-bold">Computing...</h5>
+        <div class="progress" role="progressbar" aria-label="Animated striped example" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="height: 22px">
+          <div id="progress_bar" class="progress-bar progress-bar-striped progress-bar-animated" style="width: 100%"></div>
+        </div>
+        <p class="mt-3">Interaction probabilities for your protein sequence are currently being computed.<br/>It is safe to close this tab, the computation will continue.</p>
+    </div>
+
+    <script src="{% static '/js/proteome/progress.js' %}"></script>
+
+{% endblock %}

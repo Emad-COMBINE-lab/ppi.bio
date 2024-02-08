@@ -1,0 +1,15 @@
+{% extends "masters/main.html" %}
+{% block title %}PPI.bio - Infer Portal{% endblock %}
+
+{% block body %}
+    <h1>Infer Protein Interactions</h1>
+    <p>Currently, there is only one interaction prediction mode. More will be added as development progresses.</p>
+
+    <div class="card col-lg-7">
+  <h5 class="card-header">Proteome-wide Prediction</h5>
+  <div class="card-body">
+      <p class="card-text">Predict the pairwise interaction probability of a supplied protein against the entire proteome of <em><nobr>H. sapiens</nobr></em>.</p>
+    <a href="/infer/proteome/submit" class="btn btn-primary">Infer!</a>
+  </div>
+</div>
+{% endblock %}

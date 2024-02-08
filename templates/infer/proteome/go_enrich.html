@@ -1,0 +1,48 @@
+{% extends "masters/main.html" %}
+{% load static %}
+{% load django_bootstrap5 %}
+
+{% block title %}PPI.bio - Task{% endblock %}
+
+{% block head %}
+    <meta property="data-task-id" content="{{ result_id }}" />
+{% endblock %}
+
+{% block body %}
+    <h1>Proteome Prediction Report</h1>
+    <h3 class="text-secondary">Task ID: <img id="task_success_icon" src="{% static '/imgs/success.svg' %}" style="vertical-align:1px;" alt="Success icon"/> <abbr title="{{ result_id }}">{{ short_id }}</abbr></h3>
+    <h5 class="text-secondary">Architecture: {{ architecture }} V{{ architecture_version }}</h5>
+    <h5 class="text-secondary">Organism: <em>{{ organism_sci_name }}</em> ({{ organism_common_name }})</h5>
+
+    <details>
+      <summary class="text-secondary">Sequence</summary>
+      <pre style="white-space: pre-wrap; white-space: -moz-pre-wrap; word-wrap: break-word;">{{ sequence }}</pre>
+    </details>
+
+    <ul class="nav nav-tabs mt-5 mb-5">
+      <li class="nav-item">
+        <a class="nav-link" aria-current="page" href="{% url 'proteome_report' result_id=result_id %}"><i class="fa-solid fa-table"></i> Prob. Table</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'proteome_report_prob_hist' result_id=result_id %}"><i class="fa-solid fa-chart-simple"></i> Prob. Histogram</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link active" href="{% url 'proteome_report_go_enrich' result_id=result_id %}"><i class="fa-solid fa-table"></i> GO Enrichment</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'proteome_report_go_freq' result_id=result_id %}"><i class="fa-solid fa-chart-simple"></i> GO Frequency</a>
+      </li>
+    </ul>
+
+    <h4 class="mt-5">GO Enrichment</h4>
+
+    <form action="/infer/proteome/report/{{ result_id }}/go_enrich" method="post" class="form">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        <div id="status" style="padding-top: 10px; padding-bottom: 10px;">
+        </div>
+        {% bootstrap_button button_type="submit" content="Predict Interactions" %}
+    </form>
+
+
+{% endblock %}

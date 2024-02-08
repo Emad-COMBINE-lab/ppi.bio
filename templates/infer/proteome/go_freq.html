@@ -1,0 +1,104 @@
+{% extends "masters/main.html" %}
+{% load static %}
+{% block title %}PPI.bio - Task{% endblock %}
+
+{% block head %}
+    <meta property="data-task-id" content="{{ result_id }}" />
+{% endblock %}
+
+{% block body %}
+    <h1>Proteome Prediction Report</h1>
+    <h3 class="text-secondary">Task ID: <img id="task_success_icon" src="{% static '/imgs/success.svg' %}" style="vertical-align:1px;" alt="Success icon"/> <abbr title="{{ result_id }}">{{ short_id }}</abbr></h3>
+    <h5 class="text-secondary">Architecture: {{ architecture }} V{{ architecture_version }}</h5>
+    <h5 class="text-secondary">Organism: <em>{{ organism_sci_name }}</em> ({{ organism_common_name }})</h5>
+
+    <details>
+      <summary class="text-secondary">Sequence</summary>
+      <pre style="white-space: pre-wrap; white-space: -moz-pre-wrap; word-wrap: break-word;">{{ sequence }}</pre>
+    </details>
+
+    <ul class="nav nav-tabs mt-5 mb-5">
+      <li class="nav-item">
+        <a class="nav-link" aria-current="page" href="{% url 'proteome_report' result_id=result_id %}"><i class="fa-solid fa-table"></i> Prob. Table</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'proteome_report_prob_hist' result_id=result_id %}"><i class="fa-solid fa-chart-simple"></i> Prob. Histogram</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'proteome_report_go_enrich' result_id=result_id %}"><i class="fa-solid fa-table"></i> GO Enrichment</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link active" href="{% url 'proteome_report_go_freq' result_id=result_id %}"><i class="fa-solid fa-chart-simple"></i> GO Frequency</a>
+      </li>
+    </ul>
+
+    <h4 class="mt-5">GO Frequency</h4>
+
+
+    <canvas id="probability_histogram" style="margin-left:30px;"></canvas>
+
+    <br/>
+
+    <h4>Top GOs:</h4>
+
+    <ul>
+    {% for label, count in go_frequency_zip%}
+        <li><a href="https://www.ebi.ac.uk/QuickGO/term/{{ label |urlencode}}" target="_new">{{ label }}</a> ({{ count }})</li>
+    {% endfor %}
+    </ul>
+
+
+
+    <script src="/static/js/vendor/jquery-3.6.0.min.js"></script>
+    <link href="/static/css/vendor/datatables.min.css" rel="stylesheet"/>
+    <script src="/static/js/vendor/datatables-2.1.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+              const ctx = document.getElementById('probability_histogram');
+
+              new Chart(ctx, {
+                type: 'bar',
+                data: {
+                  labels: {{ go_frequency_labels |safe}},
+                  datasets: [{
+                    label: 'GO Labels',
+                    data: {{ go_frequency_counts }},
+                    borderWidth: 1
+                  }]
+                },
+                options: {
+                  scales: {
+                    y: {
+                      beginAtZero: true,
+                        ticks: {
+                            // Include a dollar sign in the ticks
+                            callback: function(value, index, ticks) {
+                                return '        ' + Intl.NumberFormat("en-CA").format(value);
+                            }
+                        }
+                    },
+
+                  },
+                    elements: {
+                      bar: {
+                          backgroundColor: "rgba(132, 94, 194, 0.8)"
+                      }
+                    }
+                }
+              });
+
+              Chart.defaults.font.size = 16;
+              Chart.defaults.font.family = 'atkh';
+              Chart.defaults.color = '#000';
+              Chart.defaults.backgroundColor = '#03ff4b';
+
+        });
+
+
+    </script>
+
+{% endblock %}

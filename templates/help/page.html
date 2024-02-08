@@ -1,0 +1,17 @@
+{% extends "masters/main.html" %}
+{% block title %}PPI.bio - {{ help_meta.title.0 }}{% endblock %}
+
+{% block body %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/help">Help</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ help_meta.title.0 }}</li>
+    </ol>
+</nav>
+<div style="padding-top: 30px; width: 50%;">
+
+<h2 class="pb-4">{{ help_meta.title.0 }}</h2>
+
+{{ help_body | safe }}
+</div>
+{% endblock %}

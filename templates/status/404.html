@@ -1,0 +1,14 @@
+{% extends "masters/main.html" %}
+{% load static %}
+{% block title %}PPI.bio - Not Found{% endblock %}
+
+{% block body %}
+
+    <div class="progress-indicator">
+        <img src="{% static 'imgs/not_found.svg' %}" alt="Question Mark Icon" width="140px" height="140px"/>
+        <h5 class="mt-4 font-weight-bold">Not Found</h5>
+        <p>The page you are trying to access does not exist.</p>
+        <a class="btn btn-primary" href="/">Home</a> <a class="btn btn-secondary" href="#" onclick="history.back();">Go Back</a>
+    </div>
+
+{% endblock %}

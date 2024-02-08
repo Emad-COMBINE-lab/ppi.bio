@@ -1,0 +1,17 @@
+{% extends "masters/main.html" %}
+{% load django_bootstrap5 %}
+
+{% block title %}PPI.bio - Proteome-wide Prediction Submission Page{% endblock %}
+
+{% block body %}
+
+    <h1>Diagnostic</h1>
+
+    <form method="post" class="form">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        {% bootstrap_button button_type="submit" content="Run Diagnostic" %}
+    </form>
+
+
+{% endblock %}
