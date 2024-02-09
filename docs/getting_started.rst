@@ -116,7 +116,7 @@ the database. To do this, run the following command:
 
 .. code-block:: bash
 
-    python manage.py proteome_embed 9606 nest-much
+    python manage.py proteome_embed 9606 distinct-stylishly
 
 This will pre-compute the embeddings for all the human sequences using the "nest-much" weights. The "nest-much" weights
 come installed out-of-the-box, and are trained on Human PPI data from the v11.5 of the
