@@ -5,7 +5,7 @@ This is the codebase for PPI.bio, the software that powers [PPI.bio](https://ppi
 A server for protein-protein inference using the RAPPPID and INTREPPPID algorithms.
 
 ## Documentation
-You can read the documentation at https://emad-combine-lab.github.io/ppi_bio
+You can read the documentation at https://emad-combine-lab.github.io/ppi.bio
 
 ## License
 
