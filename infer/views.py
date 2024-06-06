@@ -182,7 +182,7 @@ def get_num_results_proteome(result_id: str) -> int:
     if cache_result:
         return cache_result
     else:
-        count = ProteomeResult.objects.filter(task_id=result_id).count()
+        count = len(get_all_task_result(result_id))
         cache.set(cache_key, count, timeout=3600)
         return count
 

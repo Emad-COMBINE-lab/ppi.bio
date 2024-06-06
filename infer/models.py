@@ -160,8 +160,10 @@ def get_all_task_result(result_id: str) -> List[Dict[str, Any]]:
     else:
         results = (
             ProteomeResult.objects.filter(task_id=result_id, protein__reviewed=True)
+            .exclude(protein__reviewed=False)
             .exclude(protein__gene_name="")
             .exclude(protein__protein_name="MHC class I antigen")
+            .exclude(protein__protein_name="MHC class II antigen")
             .order_by("-probability")
             .all()
             .annotate(
