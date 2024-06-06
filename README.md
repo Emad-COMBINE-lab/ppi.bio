@@ -1,5 +1,7 @@
 # PPI.bio
 
+[![DOI](https://zenodo.org/badge/754861446.svg)](https://zenodo.org/doi/10.5281/zenodo.10652229)
+
 This is the codebase for PPI.bio, the software that powers [PPI.bio](https://ppi.bio).
 
 A server for protein-protein inference using the RAPPPID and INTREPPPID algorithms.
