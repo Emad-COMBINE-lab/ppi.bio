@@ -16,15 +16,29 @@
     <form action="/infer/proteome/submit" method="post" class="form">
         {% csrf_token %}
         {% bootstrap_form form %}
+
+        <p class="text-muted">Example: <a href="#" onclick="load_example(0)">POLR2D</a></p>
+
         <div id="status" style="padding-top: 10px; padding-bottom: 10px;">
         </div>
         {% bootstrap_button id="infer_btn" button_type="submit" content="Predict Interactions" %}
     </form>
+    <!--
+    id_seq
+    MAAGGSDPRAGDVEEDASQLIFPKEFETAETLLNSEVHMLLEHRKQQNESAEDEQELSEVFMKTLNYTARFSRFKNRETIASVRSLLLQKKLHKFELACLANLCPETAEESKALIPSLEGRFEDEELQQILDDIQTKRSFQY
+    -->
     <script>
     const form_architecture = document.getElementById('id_architecture');
     const form_organism = document.getElementById('id_organism');
     const status = document.getElementById('status');
     const infer_btn = document.getElementById('infer_btn');
+    const seq_form = document.getElementById('id_seq');
+
+    function load_example(id){
+        if (id === 0) {
+            seq_form.innerText = "MAAGGSDPRAGDVEEDASQLIFPKEFETAETLLNSEVHMLLEHRKQQNESAEDEQELSEVFMKTLNYTARFSRFKNRETIASVRSLLLQKKLHKFELACLANLCPETAEESKALIPSLEGRFEDEELQQILDDIQTKRSFQY"
+        }
+    }
 
     function update_precomputed_numbers(){
 
